@@ -1,0 +1,16 @@
+[package]
+name = "goasper_ext"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "goasper_ext"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.22", features = ["extension-module", "abi3-py311"] }
+goasper-core = { path = "../../crates/goasper-core" }
+
+[package.metadata.maturin]
+name = "goasper._lowlevel"

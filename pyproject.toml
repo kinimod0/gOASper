@@ -1,0 +1,18 @@
+[build-system]
+requires = ["maturin>=1.6"]
+build-backend = "maturin"
+
+[project]
+name = "goasper"
+version = "0.1.0"
+description = "MIT-licensed Rust + Python toolkit for GDSII/OASIS layouts."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "kinimod0" }]
+license = { text = "MIT" }
+
+[tool.maturin]
+python-source = "python"
+module-name = "goasper._lowlevel"
+manifest-path = "python/goasper_ext/Cargo.toml"
+strip = true

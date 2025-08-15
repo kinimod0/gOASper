@@ -1,0 +1,9 @@
+[package]
+name = "goasper-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+thiserror = "1"
+goasper-io = { path = "../goasper-io" }
