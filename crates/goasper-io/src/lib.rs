@@ -1,5 +1,9 @@
 //! Minimal GDSII reader: extracts cell names by scanning BGNSTR..ENDSTR and STRNAME.
-use std::{fs::File, io::{Read, BufReader}, path::Path};
+use std::{
+    fs::File,
+    io::{BufReader, Read},
+    path::Path,
+};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -7,7 +11,12 @@ pub enum IoError {
     #[error("I/O: {0}")]
     Io(#[from] std::io::Error),
     #[error("Malformed GDS record at offset {offset} (len={len}, rectype={rectype:#04x}, dtype={dtype:#04x})")]
-    Malformed { offset: u64, len: u16, rectype: u8, dtype: u8 },
+    Malformed {
+        offset: u64,
+        len: u16,
+        rectype: u8,
+        dtype: u8,
+    },
     #[error("Unexpected EOF")]
     Eof,
 }
@@ -15,8 +24,8 @@ pub enum IoError {
 /// GDS record type constants (subset)
 const RT_BGNSTR: u8 = 0x05;
 const RT_STRNAME: u8 = 0x06;
-const RT_ENDSTR:  u8 = 0x07;
-const RT_ENDLIB:  u8 = 0x04;
+const RT_ENDSTR: u8 = 0x07;
+const RT_ENDLIB: u8 = 0x04;
 
 /// Data type codes (see GDSII spec); we only need ASCII here.
 const DT_ASCII: u8 = 0x06;
@@ -48,7 +57,12 @@ pub fn read_gds_cell_names<P: AsRef<Path>>(path: P) -> Result<Vec<String>, IoErr
         let dtype = hdr[3];
 
         if len < 4 {
-            return Err(IoError::Malformed { offset, len, rectype, dtype });
+            return Err(IoError::Malformed {
+                offset,
+                len,
+                rectype,
+                dtype,
+            });
         }
         let pay = (len - 4) as usize;
         buf.resize(pay, 0);
@@ -117,7 +131,9 @@ mod tests {
         let mut bytes = Vec::new();
         bytes.extend(rec(RT_BGNSTR, 0x02, &[0; 24])); // BGNSTR with dummy dates (12 u16)
         let mut nm = b"TOP".to_vec();
-        if nm.len() % 2 != 0 { nm.push(0); }
+        if nm.len() % 2 != 0 {
+            nm.push(0);
+        }
         bytes.extend(rec(RT_STRNAME, DT_ASCII, &nm));
         bytes.extend(rec(RT_ENDSTR, 0x00, &[]));
         bytes.extend(rec(RT_ENDLIB, 0x00, &[]));

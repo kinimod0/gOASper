@@ -7,7 +7,9 @@ pub enum GoasperError {
 }
 
 impl From<goasper_io::IoError> for GoasperError {
-    fn from(e: goasper_io::IoError) -> Self { GoasperError::Io(e.to_string()) }
+    fn from(e: goasper_io::IoError) -> Self {
+        GoasperError::Io(e.to_string())
+    }
 }
 
 #[derive(Default)]
@@ -16,7 +18,9 @@ pub struct Layout {
 }
 
 impl Layout {
-    pub fn new() -> Self { Self::default() }
+    pub fn new() -> Self {
+        Self::default()
+    }
 
     /// load a GDS and populate the internal cell list
     pub fn load_gds<P: AsRef<std::path::Path>>(&mut self, p: P) -> Result<(), GoasperError> {
@@ -26,11 +30,14 @@ impl Layout {
     }
 
     /// return a snapshot of known cell names
-    pub fn cell_names(&self) -> &[String] { &self.cells }
+    pub fn cell_names(&self) -> &[String] {
+        &self.cells
+    }
 
     /// TODO: stub: will implement later
     /// exists so the Python API compiles
-    pub fn save_oas<P: AsRef<std::path::Path>>(&self, _p: P) -> Result<(), GoasperError> {
+    pub fn save_oas<P: AsRef<std::path::Path>>(&self, p: P) -> Result<(), GoasperError> {
+        let _ = p; // silence until implemented
         Ok(())
     }
 }

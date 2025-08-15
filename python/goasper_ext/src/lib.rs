@@ -1,23 +1,34 @@
-use pyo3::prelude::*;
-use goasper_core::Layout;
+use goasper_core::{GoasperError, Layout};
+use pyo3::{exceptions::PyIOError, prelude::*};
+
+fn to_pyerr(e: GoasperError) -> PyErr {
+    PyIOError::new_err(e.to_string())
+}
 
 #[pyclass]
-struct PyLayout { inner: Layout }
+struct PyLayout {
+    inner: Layout,
+}
 
 #[pymethods]
 impl PyLayout {
     #[new]
-    fn new() -> Self { Self { inner: Layout::new() } }
+    fn new() -> Self {
+        Self {
+            inner: Layout::new(),
+        }
+    }
 
     fn load_gds(&mut self, path: &str) -> PyResult<()> {
-        self.inner.load_gds(path).map_err(|e| pyo3::exceptions::PyIOError::new_err(e.to_string()))
+        self.inner.load_gds(path).map_err(to_pyerr)?; // GoasperError -> PyErr
+        Ok(())
     }
 
     fn save_oas(&self, path: &str) -> PyResult<()> {
-        self.inner.save_oas(path).map_err(|e| pyo3::exceptions::PyIOError::new_err(e.to_string()))
+        self.inner.save_oas(path).map_err(to_pyerr)?;
+        Ok(())
     }
 
-    /// Return the list of cell names as a Python list[str].
     fn cell_names(&self) -> Vec<String> {
         self.inner.cell_names().to_vec()
     }

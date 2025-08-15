@@ -9,7 +9,7 @@ name = "goasper_ext"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.22", features = ["extension-module", "abi3-py311"] }
+pyo3 = { version = "0.25.1", features = ["extension-module", "abi3-py311"] }
 goasper-core = { path = "../../crates/goasper-core" }
 
 [package.metadata.maturin]
