@@ -1,0 +1,52 @@
+name: build-and-publish
+
+on:
+  push:
+    tags:
+      - "v*"  # publish on tags like v0.1.0
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build wheels
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        py: ["3.11", "3.12", "3.13"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.py }}
+      - uses: PyO3/maturin-action@v1
+        with:
+          # Build wheels for the extension crate defined in manifest-path
+          args: >-
+            build --release
+            --interpreter python
+            --manifest-path python/goasper_ext/Cargo.toml
+            --sdist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}-py${{ matrix.py }}
+          path: target/wheels/*
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # required for trusted publishing
+      contents: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Show artifacts
+        run: ls -R dist
+      - name: Publish (trusted OIDC)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages_dir: dist
+          skip_existing: true

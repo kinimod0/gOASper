@@ -1,5 +1,5 @@
 [build-system]
-requires = ["maturin>=1.6"]
+requires = ["maturin>=1.9.3"]
 build-backend = "maturin"
 
 [project]
@@ -10,9 +10,17 @@ readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "kinimod0" }]
 license = { text = "MIT" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Rust",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+]
 
 [tool.maturin]
 python-source = "python"
 module-name = "goasper._lowlevel"
 manifest-path = "python/goasper_ext/Cargo.toml"
 strip = true
+manylinux = "2_34"
+sdist-include = ["crates", "Cargo.toml", "LICENSE", "README.md"]

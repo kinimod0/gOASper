@@ -14,3 +14,10 @@ class Layout:
     def cells(self):
         """Return list of cell (structure) names parsed from the GDS."""
         return self._inner.cell_names()
+
+    def summary(self):
+        return self._inner.summary()
+
+    def polygons(self):
+        """List of dicts: [{"name": str, "polys": [{"layer":int,"datatype":int,"xy":[(x,y),..]}]}]"""
+        return self._inner.polygons()

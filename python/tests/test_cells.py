@@ -2,7 +2,6 @@ from goasper import Layout
 
 
 def test_cells_smoke(tmp_path):
-    # This expects you to put a tiny.gds under testdata/
     layout = Layout()
     layout.load_gds("examples/nand2.gds2")
     assert all(
